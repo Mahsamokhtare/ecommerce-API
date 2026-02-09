@@ -24,6 +24,10 @@
     "#middleware": {
       "development": "./src/middleware/index.ts",
       "default": "./dist/middleware/index.js"
+    },
+    "#schemas": {
+      "development": "./src/schemas/index.ts",
+      "default": "./dist/schemas/index.js"
     }
   },
   "scripts": {
@@ -43,6 +47,7 @@
   },
   "dependencies": {
     "express": "^5.1.0",
-    "mongoose": "^8.16.4"
+    "mongoose": "^8.16.4",
+    "zod": "^4.3.6"
   }
 }

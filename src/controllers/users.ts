@@ -1,0 +1,45 @@
+import type { RequestHandler } from 'express';
+import type { userInputSchema, userSchema, userUpdateInputSchema } from '#schemas';
+import type { z } from 'zod/v4';
+import User from '#models/User';
+
+type UserDTO = z.infer<typeof userSchema>;
+type UserInputDTO = z.infer<typeof userInputSchema>;
+type UserUpdateDTO = z.infer<typeof userUpdateInputSchema>;
+type IdParams = { id: string };
+
+const createUser: RequestHandler<{}, UserDTO, UserInputDTO> = async (req, res) => {
+  const { body } = req;
+  const found = await User.findOne({ email: body.email });
+  if (found) throw new Error('User already exists', { cause: { status: 409 } });
+  const user = await User.create(body satisfies UserInputDTO);
+  res.status(201).json;
+};
+
+const updateUser: RequestHandler<IdParams, UserDTO, UserUpdateDTO> = async (req, res) => {
+  const {
+    body,
+    params: { id }
+  } = req;
+  const { name } = body;
+
+  const user = await User.findById(id);
+
+  if (!user) throw new Error('User not found', { cause: { status: 404 } });
+
+  user.name = name;
+  await user.save();
+  // res.json(user);
+};
+
+const getUserById: RequestHandler<IdParams, UserDTO> = async (req, res) => {
+  const {
+    params: { id }
+  } = req;
+
+  const user = await User.findById(id);
+
+  if (!user) throw new Error('User not found', { cause: { status: 404 } });
+
+  // res.json(user);
+};
