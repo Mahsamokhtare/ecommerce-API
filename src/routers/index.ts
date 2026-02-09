@@ -1,1 +1,1 @@
-export { default as userRouter } from './userRouter.ts';
+export { default as userRoutes } from './userRoutes.ts';

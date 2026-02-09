@@ -1,7 +1,7 @@
 import { isValidObjectId, Types } from 'mongoose';
 import { z } from 'zod/v4';
-import { categoryInputSchema } from './category';
-import { dbEntrySchema } from './shared';
+import { categoryInputSchema } from './category.ts';
+import { dbEntrySchema } from './shared.ts';
 
 const productInputSchema = z.strictObject({
   name: z.string().min(1).trim(),

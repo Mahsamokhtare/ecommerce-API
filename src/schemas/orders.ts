@@ -1,8 +1,8 @@
 import { isValidObjectId, Types } from 'mongoose';
 import { z } from 'zod/v4';
-import { dbEntrySchema } from './shared';
-import { productInputSchema } from './product';
-import { userInputSchema } from './user';
+import { dbEntrySchema } from './shared.ts';
+import { productInputSchema } from './product.ts';
+import { userInputSchema } from './user.ts';
 
 const orderItemZodSchema = z.strictObject({
   productId: z.string().refine(val => isValidObjectId(val), 'Invalid product ID'),
