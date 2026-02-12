@@ -1,22 +1,32 @@
-import type { RequestHandler } from 'express';
+import { type RequestHandler } from 'express';
 import type { userInputSchema, userSchema, userUpdateInputSchema } from '#schemas';
 import type { z } from 'zod/v4';
-import User from '#models/User';
+import { User } from '#models';
+
+type UserInputDTO = z.infer<typeof userInputSchema>;
+
+type UserUpdateDTo = z.infer<typeof userUpdateInputSchema>;
 
 type UserDTO = z.infer<typeof userSchema>;
-type UserInputDTO = z.infer<typeof userInputSchema>;
-type UserUpdateDTO = z.infer<typeof userUpdateInputSchema>;
+
 type IdParams = { id: string };
 
+const getUsers: RequestHandler<{}, UserDTO[]> = async (req, res) => {
+  const users = await User.find().lean();
+  res.json(users);
+};
 const createUser: RequestHandler<{}, UserDTO, UserInputDTO> = async (req, res) => {
+  console.log('Test 2');
+  // console.log('This is the body', req);
   const { body } = req;
   const found = await User.findOne({ email: body.email });
   if (found) throw new Error('User already exists', { cause: { status: 409 } });
   const user = await User.create(body satisfies UserInputDTO);
-  res.status(201).json;
+  console.log('hehe');
+  res.status(201).json(user);
 };
 
-const updateUser: RequestHandler<IdParams, UserDTO, UserUpdateDTO> = async (req, res) => {
+const updateUser: RequestHandler<IdParams, UserDTO, UserUpdateDTo> = async (req, res) => {
   const {
     body,
     params: { id }
@@ -29,7 +39,7 @@ const updateUser: RequestHandler<IdParams, UserDTO, UserUpdateDTO> = async (req,
 
   user.name = name;
   await user.save();
-  // res.json(user);
+  res.json(user);
 };
 
 const getUserById: RequestHandler<IdParams, UserDTO> = async (req, res) => {
@@ -37,9 +47,22 @@ const getUserById: RequestHandler<IdParams, UserDTO> = async (req, res) => {
     params: { id }
   } = req;
 
-  const user = await User.findById(id);
+  const user = await User.findById(id).lean();
 
   if (!user) throw new Error('User not found', { cause: { status: 404 } });
 
-  // res.json(user);
+  res.json(user);
 };
+
+const deleteUser: RequestHandler<IdParams> = async (req, res) => {
+  const {
+    params: { id }
+  } = req;
+
+  const user = User.findByIdAndDelete(id);
+  if (!user) throw new Error('User not found', { cause: { status: 404 } });
+
+  res.json({ message: 'User deleted' });
+};
+
+export { getUserById, createUser, updateUser, getUsers, deleteUser };
