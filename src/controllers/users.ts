@@ -16,12 +16,14 @@ const getUsers: RequestHandler<{}, UserDTO[]> = async (req, res) => {
   res.json(users);
 };
 const createUser: RequestHandler<{}, UserDTO, UserInputDTO> = async (req, res) => {
+  console.log('Test 2');
+  // console.log('This is the body', req);
   const { body } = req;
   const found = await User.findOne({ email: body.email });
   if (found) throw new Error('User already exists', { cause: { status: 409 } });
   const user = await User.create(body satisfies UserInputDTO);
   console.log('hehe');
-  res.status(201).json;
+  res.status(201).json(user);
 };
 
 const updateUser: RequestHandler<IdParams, UserDTO, UserUpdateDTo> = async (req, res) => {

@@ -1,6 +1,4 @@
-import { Schema } from 'mongoose';
-import User from './User';
-import Product from './Product';
+import { model, Schema } from 'mongoose';
 
 const orderItemSchema = new Schema({
   productId: {
@@ -34,3 +32,5 @@ const orderSchema = new Schema(
     timestamps: true
   }
 );
+
+export default model('Order', orderSchema);

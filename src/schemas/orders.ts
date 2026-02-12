@@ -11,7 +11,7 @@ const orderItemZodSchema = z.strictObject({
 
 const orderInputSchema = z.strictObject({
   userId: z.string().refine(val => isValidObjectId(val), 'Invalid user ID'),
-  total: z.number(),
+  // total: z.number(),
   products: z.array(orderItemZodSchema).min(1)
 });
 
@@ -21,7 +21,7 @@ const populatedProductSchema = z.strictObject({
 });
 
 const populatedUserSchema = z.strictObject({
-  ...userInputSchema.pick({ name: true, email: true }),
+  ...userInputSchema.pick({ name: true, email: true }).shape,
   _id: z.instanceof(Types.ObjectId)
 });
 
@@ -38,4 +38,4 @@ const orderSchema = z.strictObject({
   ...dbEntrySchema
 });
 
-export { orderSchema, orderInputSchema };
+export { orderSchema, orderInputSchema, populatedProductSchema, populatedUserSchema };

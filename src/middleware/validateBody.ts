@@ -3,6 +3,7 @@ import { z, type ZodObject } from 'zod/v4';
 
 const validateBody = (zodschema: ZodObject): RequestHandler => {
   return (req, res, next) => {
+    console.log(req.body);
     if (!req.body) next(new Error('Body is required', { cause: { status: 400 } }));
 
     const { data, error, success } = zodschema.safeParse(req.body);
